@@ -1,0 +1,93 @@
+body {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 12px;
+}
+
+html, body {
+    /* Height and width fallback for older browsers. */
+    height: 100%;
+    width: 100%;
+    /* Set the height to match that of the viewport. */
+    height: 100vh;
+    /* Set the width to match that of the viewport. */
+    width: 100vw;
+    /* Remove any browser-default margins. */
+    margin: 0;
+}
+
+#container {
+    /* Height and width fallback for older browsers. */
+    height: 100%;
+    width: 100%;
+    /* Set the height to match that of the viewport. */
+    height: 100vh;
+    /* Set the width to match that of the viewport. */
+    width: 100vw;
+    /* Remove any browser-default margins. */
+    margin: 0;
+    display:flex;
+    flex-flow:column;
+}
+
+ul {
+    list-style: none;
+    padding-left: 15px;
+}
+
+li {
+    padding-top: 0.5px;
+    padding-bottom: 0.5px;
+}
+
+.collapse {
+    background: url(collapse.gif) no-repeat center center;
+    cursor: pointer;
+}
+
+.expand {
+    background: url(expand.gif) no-repeat center center;
+    cursor: pointer;
+}
+
+.inlineSpan {
+    display: inline-block;
+    height: 9px;
+    width: 9px;
+    margin-right: 5px;
+}
+
+.objectSpan {
+    background: url(curlyBrackets.png) no-repeat center center;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    margin-right: 5px;
+    margin-left: 3px;
+    vertical-align: bottom;
+}
+
+#topNode {
+    padding-left: 0;
+    margin-top:2px;
+    margin-bottom:0;
+}
+
+.stringSpan {
+    background-color: green;
+    margin-left: 21px;
+}
+
+.numberSpan {
+    background-color: blue;
+    margin-left: 21px;
+}
+
+.booleanSpan {
+    background-color: deepskyblue;
+    margin-left: 21px;
+}
+
+.nullSpan {
+    background-color: red;
+    margin-left: 21px;
+}

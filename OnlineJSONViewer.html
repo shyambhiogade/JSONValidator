@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Online JSON Viewer</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <meta charset="utf-8" />
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="jsonviewerstyles.css">
+    <script src="src.js"></script>
+
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
+
+</head>
+<body>
+    <div id="container" style="background-color:lightgray;">
+        <div id="actionContainer" style="background-color:lightgray;padding:5px;display:flex;flex-flow:row nowrap;">
+            <div>
+                <button id="formatBtn">Format</button>
+                <button id="minifyBtn">Remove whitespace</button>
+            </div>
+            <div>
+                <button id="treeViewBtn" style="margin-left:5px;background-color:#4CAF50;color:#ffffff">Tree View</button>
+                <button id="expandAllBtn" style="">Expand All</button>
+                <button id="collapseAllBtn">Collapse All</button>                
+            </div>
+        </div>
+        <div id="jsonContainer" style="background-color:lightgray;flex-grow:1;display:flex;flex-flow:row nowrap">
+            <textarea id="jsonTextArea" spellcheck="false" style="resize:none;margin-left:5px;margin-right:2.5px; margin-bottom:5px;outline:none;border:solid 1px black;"></textarea>
+            <div id="treePanel" style="background-color:white;margin-left:2.5px;margin-right:5px;margin-bottom:5px;overflow:auto;border:solid 1px black;"> 
+                <div id="treecontainer" style="margin-left:5px;"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
