@@ -115,4 +115,41 @@ $(function () {
         $("#treeView").css("display", "none");
         $("#textView").css("display", "block");
     });
+
+
+    // add splitter - container.
+    var splitter = $("#splitter");
+    splitter.css("left", splitter.position().left);
+    splitter.height(splitter.height());
+    splitter.css("position", "absolute");
+    var jsonTextArea = $("#jsonTextArea");
+    var treePanel = $("#treePanel");
+    var jsonContainer = $("#jsonContainer");
+
+    var isDragging = false;
+    var downScreenX = 0;
+    splitter.mousedown(function (event) {
+        downScreenX = event.screenX;
+        isDragging = true;
+    });
+
+    jsonContainer.mousemove(function (event) {
+        if (isDragging && event.screenX > 100 & ((jsonContainer.width() - event.screenX) > 100)) {
+            jsonTextArea.css("cursor", "col-resize");
+            treePanel.css("cursor", "col-resize");
+            var distance = event.screenX - downScreenX;
+            var newLeft = (splitter.position().left + distance);
+            splitter.css("left", event.screenX + 2 + "px");
+            var treePanelWidth = jsonContainer.width() - event.screenX - 5;
+            jsonTextArea.css("width", event.screenX - 5 + "px");
+            treePanel.css("width", treePanelWidth + "px");
+        } else {
+            jsonTextArea.css("cursor", "default");
+            treePanel.css("cursor", "default");
+        }
+    }).mouseup(function () { isDragging = false; }).mouseleave(function () {
+        isDragging = false;
+    });
+
+    // end- add splitter - container.
 });
