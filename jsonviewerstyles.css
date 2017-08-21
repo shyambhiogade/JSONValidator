@@ -15,18 +15,26 @@ html, body {
     margin: 0;
 }
 
-#container {
-    /* Height and width fallback for older browsers. */
-    height: 100%;
-    width: 100%;
-    /* Set the height to match that of the viewport. */
-    height: 100vh;
-    /* Set the width to match that of the viewport. */
-    width: 100vw;
-    /* Remove any browser-default margins. */
-    margin: 0;
-    display:flex;
-    flex-flow:column;
+#header {
+    height: 63px;
+    font-family: fontawesome;
+    text-decoration: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 37px;
+    letter-spacing: 3px;
+    color: #555555;
+    display: block;
+    position: relative;
+    text-align: left;
+    padding-top:20px;
+    padding-left:20px;
+    width:500px;
+}
+
+#container {     
+    width: 100%;   
 }
 
 ul {
@@ -58,6 +66,16 @@ li {
 
 .objectSpan {
     background: url(curlyBrackets.png) no-repeat center center;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    margin-right: 5px;
+    margin-left: 3px;
+    vertical-align: bottom;
+}
+
+.arraySpan {
+    background: url(array.gif) no-repeat center center;
     display: inline-block;
     height: 16px;
     width: 16px;
