@@ -49,7 +49,7 @@ $(function () {
 
     var inputJSONObj = {
         "name": "John",
-        "married":true,
+        "married": true,
         "age": 30,
         "cars": [
             { "name": "Ford", "models": ["Fiesta", "Focus", "Mustang"] },
@@ -63,7 +63,7 @@ $(function () {
         $("#jsonTextArea").val(cookieData);
     } else {
         $("#jsonTextArea").val(JSON.stringify(inputJSONObj));
-    }    
+    }
 
     var formatJSONData = function () {
         var inputjsonData = $("#jsonTextArea").val();
@@ -81,11 +81,11 @@ $(function () {
         if (childListDisplayValue === "none") {
             toggleEle.removeClass("expand");
             toggleEle.addClass("collapse");
-            childList.css("display", "");
+            childList.css("display", "");            
         } else {
             toggleEle.removeClass("collapse");
             toggleEle.addClass("expand");
-            childList.css("display", "none");
+            childList.css("display", "none");            
         }
     }
 
@@ -106,7 +106,7 @@ $(function () {
                 if (value.length) {
                     objHtml = "<span class='toggleTree collapse inlineSpan'></span><span class='arraySpan'></span>";
                 }
-                var spanEle = $(objHtml);                
+                var spanEle = $(objHtml);
                 var parentUl = parentNode.find("ul").first();
 
                 if (value === null) {
@@ -134,7 +134,7 @@ $(function () {
                 parentNode.find("ul").first().append("<li><div class='eachItem'><span class='inlineSpan " + typeSpecificClass + "'></span>" + key + " : " + value + "</div></li>");
             }
         });
-        
+
         // add toggle handler
         $(".toggleTree").off("click");
         $(".toggleTree").on("click", toggleTree);
@@ -142,15 +142,93 @@ $(function () {
         // add click selection
         $(".eachItem").off("click");
         $(".eachItem").on("click", function (event) {
-            $(".eachItem").css("background-color", '');
-            $(event.currentTarget).css("background-color", "#cce6ff");
+            $(".eachItem").removeClass("itemSelected");
+            $(event.currentTarget).addClass("itemSelected");
         });
     }
 
+    var leftKeyPress = function () {
+        var selectedItem = $(".itemSelected");
+        var expandItem = selectedItem.find(".collapse")
+        if (expandItem.length > 0) {
+            var eventObject = {};
+            eventObject.target = expandItem;
+            toggleTree(eventObject);
+        }
+    }
+
+    var rightKeyPress = function () {
+        var selectedItem = $(".itemSelected");
+        var expandItem = selectedItem.find(".expand")
+        if (expandItem.length > 0) {
+            var eventObject = {};
+            eventObject.target = expandItem;
+            toggleTree(eventObject);
+        }
+    }
+
+    var moveSelectionUp = function () {
+        var eachItemSelection = $(".eachItem").filter(function (index) {
+            return $(this).closest("ul").css("display") != "none";
+        });
+        var selectedItem = $(".itemSelected");
+        var selectedItemIndex = eachItemSelection.index(selectedItem);
+        if (selectedItemIndex >= 0) { // do arrow selection only if already one item selected.            
+            if ((selectedItemIndex - 1) >= 0) {
+                $(eachItemSelection[selectedItemIndex]).removeClass("itemSelected");
+                $(eachItemSelection[selectedItemIndex - 1]).addClass("itemSelected");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    var moveSelectionDown = function () {
+        var eachItemSelection = $(".eachItem").filter(function (index) {
+            return $(this).closest("ul").css("display") != "none";
+        });
+
+        var selectedItem = $(".itemSelected");
+        var selectedItemIndex = eachItemSelection.index(selectedItem);
+        if (selectedItemIndex >= 0) { // do arrow selection only if already one item selected.            
+            if ((eachItemSelection.length - 1) >= (selectedItemIndex + 1)) {                
+                $(eachItemSelection[selectedItemIndex]).removeClass("itemSelected");
+                $(eachItemSelection[selectedItemIndex + 1]).addClass("itemSelected");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    $(document).keydown(function (e) {
+        var isProcessed = false;
+        switch (e.which) {
+            case 37: // left
+                leftKeyPress();
+                break;
+
+            case 38: // up
+                isProcessed = moveSelectionUp();
+                break;
+
+            case 39: // right
+                rightKeyPress();
+                break;
+
+            case 40: // down
+                isProcessed = moveSelectionDown();
+                break;
+
+            default: return; // exit this handler for other keys
+        }
+        if (!isProcessed) {
+            e.preventDefault(); // prevent the default action (scroll / move caret)
+        }
+    });
 
     var treeContainer = $("#treecontainer");
     var topJSONObj = { JSON: inputJSONObj };
-    addTree(topJSONObj, treeContainer);  
+    addTree(topJSONObj, treeContainer);
 
     $("#formatBtn").click(formatJSONData);
 
@@ -159,7 +237,7 @@ $(function () {
         var outputJSONData = JSON.stringify(JSON.parse(inputjsonData));
         $("#jsonTextArea").val(outputJSONData);
     });
-       
+
     $("#expandAllBtn").on("click", function () {
         $("#treecontainer").find("#topNode").find("ul").css("display", "");
         $("#treecontainer").find(".toggleTree").removeClass("expand").addClass("collapse");
@@ -169,7 +247,7 @@ $(function () {
         $("#treecontainer").find("#topNode").find("ul").css("display", "none");
         $("#treecontainer").find(".toggleTree").removeClass("collapse").addClass("expand");
     });
-    
+
     $("#treeViewBtn").on("click", function () {
         $("#topNode").remove();
         firstTime = true;
@@ -207,7 +285,7 @@ $(function () {
             ((jsonContainer.width() - event.pageX) > minWidthAllowedForInnerContainer)) {
             jsonTextArea.css("cursor", "col-resize");
             treePanel.css("cursor", "col-resize");
-            var distance = event.pageX - downpageX;            
+            var distance = event.pageX - downpageX;
             if (distance !== 0) {
                 splitter.css("left", event.pageX + 2 + "px");
                 var treePanelWidth = jsonContainer.width() - event.pageX - innerContainerMargin;
