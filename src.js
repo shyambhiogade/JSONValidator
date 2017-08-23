@@ -35,7 +35,13 @@ $(function () {
 
     var cookieData = document.cookie;
     if (cookieData) {
-        $("#jsonTextArea").val(cookieData);
+        try {
+            inputJSONObj = JSON.parse(JSON.parse(cookieData));
+            $("#jsonTextArea").val(JSON.stringify(inputJSONObj));
+        } catch (e) {
+            $("#jsonTextArea").val(JSON.stringify(inputJSONObj));
+        }
+        
     } else {
         $("#jsonTextArea").val(JSON.stringify(inputJSONObj));
     }
@@ -260,7 +266,7 @@ $(function () {
     });
 
     $('#jsonTextArea').bind('input propertychange', function () {
-        document.cookie = $('#jsonTextArea').val();       
+        document.cookie = JSON.stringify($('#jsonTextArea').val());       
     });
 
     // add splitter - container.
