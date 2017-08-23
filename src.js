@@ -101,7 +101,7 @@ $(function () {
 
         $.each(jsonObj, function (key, value) {
             var typeofValue = typeof (value)
-            if (typeofValue === "object") {
+            if (value !=null && typeofValue === "object") {
                 var objHtml = "<span class='toggleTree collapse inlineSpan'></span><span class='objectSpan'></span>";
                 if (value.length) {
                     objHtml = "<span class='toggleTree collapse inlineSpan'></span><span class='arraySpan'></span>";
@@ -130,6 +130,9 @@ $(function () {
                     typeSpecificClass = "numberSpan";
                 } else if (typeofValue === "boolean") {
                     typeSpecificClass = "booleanSpan";
+                } else if (value === null){
+                    typeSpecificClass = "nullSpan";
+                    value = JSON.stringify(value);
                 }
                 parentNode.find("ul").first().append("<li><div class='eachItem'><span class='inlineSpan " + typeSpecificClass + "'></span>" + key + " : " + value + "</div></li>");
             }
