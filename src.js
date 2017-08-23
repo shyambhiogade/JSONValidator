@@ -16,31 +16,6 @@ $(function () {
         splitter.height($("#treePanel").height());
     }
 
-    var cookieName = "jsonviewerCookie";
-    // Cookies
-    function createCookie(name, value, days) {
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            var expires = "; expires=" + date.toGMTString();
-        }
-        else var expires = "";
-
-        document.cookie = name + "=" + value + expires + "; path=/";
-    }
-
-    // read cookies
-    function readCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-        }
-        return null;
-    }
-
     setSizeForControl();
 
     $(window).resize(function () {
@@ -58,7 +33,7 @@ $(function () {
         ]
     };
 
-    var cookieData = readCookie(cookieName);
+    var cookieData = document.cookie;
     if (cookieData) {
         $("#jsonTextArea").val(cookieData);
     } else {
@@ -66,9 +41,14 @@ $(function () {
     }
 
     var formatJSONData = function () {
-        var inputjsonData = $("#jsonTextArea").val();
-        var outputJSONData = JSON.stringify(JSON.parse(inputjsonData), null, '  ');
-        $("#jsonTextArea").val(outputJSONData);
+        try {
+            var inputjsonData = $("#jsonTextArea").val();
+            var outputJSONData = JSON.stringify(JSON.parse(inputjsonData), null, '  ');
+            $("#jsonTextArea").val(outputJSONData);
+
+        } catch (e) {
+            showSnackbar();
+        }       
     };
 
     formatJSONData();
@@ -82,10 +62,12 @@ $(function () {
             toggleEle.removeClass("expand");
             toggleEle.addClass("collapse");
             childList.css("display", "");            
+            childList.find(".eachItem").attr("invisible", "false");
         } else {
             toggleEle.removeClass("collapse");
             toggleEle.addClass("expand");
-            childList.css("display", "none");            
+            childList.css("display", "none");
+            childList.find(".eachItem").attr("invisible","true");
         }
     }
 
@@ -149,11 +131,17 @@ $(function () {
 
     var leftKeyPress = function () {
         var selectedItem = $(".itemSelected");
-        var expandItem = selectedItem.find(".collapse")
+        var expandItem = selectedItem.find(".collapse");
         if (expandItem.length > 0) {
             var eventObject = {};
             eventObject.target = expandItem;
             toggleTree(eventObject);
+        } else {
+            var nextItemToSelect = selectedItem.closest("ul").closest("li").find(".eachItem").first();
+            if (nextItemToSelect.length > 0) {
+                selectedItem.removeClass("itemSelected");
+                nextItemToSelect.addClass("itemSelected");
+            }            
         }
     }
 
@@ -166,10 +154,14 @@ $(function () {
             toggleTree(eventObject);
         }
     }
+       
+    $("#jsonTextArea").focus(function() {
+        $(".itemSelected").removeClass("itemSelected"); 
+    });
 
     var moveSelectionUp = function () {
         var eachItemSelection = $(".eachItem").filter(function (index) {
-            return $(this).closest("ul").css("display") != "none";
+            return $(this).attr("invisible") != "true";
         });
         var selectedItem = $(".itemSelected");
         var selectedItemIndex = eachItemSelection.index(selectedItem);
@@ -184,8 +176,8 @@ $(function () {
     }
 
     var moveSelectionDown = function () {
-        var eachItemSelection = $(".eachItem").filter(function (index) {
-            return $(this).closest("ul").css("display") != "none";
+        var eachItemSelection = $(".eachItem").filter(function(index) {
+            return $(this).attr("invisible") != "true";
         });
 
         var selectedItem = $(".itemSelected");
@@ -201,7 +193,6 @@ $(function () {
     }
 
     $(document).keydown(function (e) {
-        var isProcessed = false;
         switch (e.which) {
             case 37: // left
                 leftKeyPress();
@@ -221,9 +212,6 @@ $(function () {
 
             default: return; // exit this handler for other keys
         }
-        if (!isProcessed) {
-            e.preventDefault(); // prevent the default action (scroll / move caret)
-        }
     });
 
     var treeContainer = $("#treecontainer");
@@ -233,14 +221,18 @@ $(function () {
     $("#formatBtn").click(formatJSONData);
 
     $("#minifyBtn").click(function () {
-        var inputjsonData = $("#jsonTextArea").val();
-        var outputJSONData = JSON.stringify(JSON.parse(inputjsonData));
-        $("#jsonTextArea").val(outputJSONData);
+        try {
+            var inputjsonData = $("#jsonTextArea").val();
+            var outputJSONData = JSON.stringify(JSON.parse(inputjsonData));
+            $("#jsonTextArea").val(outputJSONData);
+        } catch (e) {
+            showSnackbar();
+        }       
     });
 
     $("#expandAllBtn").on("click", function () {
         $("#treecontainer").find("#topNode").find("ul").css("display", "");
-        $("#treecontainer").find(".toggleTree").removeClass("expand").addClass("collapse");
+        $("#treecontainer").find(".toggleTree").removeClass("expand").addClass("collapse");        
     });
 
     $("#collapseAllBtn").on("click", function () {
@@ -248,17 +240,27 @@ $(function () {
         $("#treecontainer").find(".toggleTree").removeClass("collapse").addClass("expand");
     });
 
+    function showSnackbar() {
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function() { x.className = x.className.replace("show", ""); }, 3000);
+    }
+
     $("#treeViewBtn").on("click", function () {
         $("#topNode").remove();
         firstTime = true;
         var inputjsonData = $("#jsonTextArea").val();
-        var JSONObj = JSON.parse(inputjsonData);
-        var topJSONObj = { JSON: JSONObj };
-        addTree(topJSONObj, treeContainer);
+        try {
+            var JSONObj = JSON.parse(inputjsonData);
+            var topJSONObj = { JSON: JSONObj };
+            addTree(topJSONObj, treeContainer);
+        } catch (e) {           
+            showSnackbar();
+        }
     });
 
     $('#jsonTextArea').bind('input propertychange', function () {
-        createCookie(cookieName, $('#jsonTextArea').val(), 360);
+        document.cookie = $('#jsonTextArea').val();       
     });
 
     // add splitter - container.
