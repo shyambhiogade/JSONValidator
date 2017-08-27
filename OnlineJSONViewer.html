@@ -1,12 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <title>Online JSON Viewer</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <meta charset="utf-8" />
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="jsonviewerstyles.css">
     <script src="src.js"></script>
 
@@ -15,6 +16,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
 
 </head>
+
 <body>
     <a id="header" href="./OnlineJSONViewer.html">JSON Validator<span style="font-size:12px;">- by shyam bhiogade</span></a>
     <div id="container" style="background-color:#f1f1f1;">
@@ -30,7 +32,13 @@
             </div>
         </div>
         <div id="jsonContainer" style="background-color:#f1f1f1;flex-grow:1;display:flex;flex-flow:row nowrap">
-            <textarea id="jsonTextArea" spellcheck="false" style="resize:none;margin-left:5px; margin-bottom:5px;outline:none;border:solid 1px black;margin-right:2.5px;"></textarea>
+            <!-- <textarea id="jsonTextArea" spellcheck="false" style="resize:none;margin-left:5px; margin-bottom:5px;outline:none;border:solid 1px black;margin-right:2.5px;"/> -->
+            <div id="jsonTextArea" style="margin-left:5px; margin-bottom:5px;outline:none;border:solid 1px black;margin-right:2.5px;">
+                <div id="editorContainer" style="width:100%;height:'100%';overflow:hidden;">
+                    <pre id="editor">                               
+                            </pre>
+                </div>
+            </div>
             <div id="splitter" style="width:5px;cursor:col-resize;"></div>
             <div id="treePanel" style="background-color:white;margin-right:5px;margin-bottom:5px;overflow:auto;border:solid 1px black;margin-left:2.5px;">
                 <div id="treecontainer" style="margin-left:5px;"></div>
@@ -39,4 +47,5 @@
     </div>
     <div id="snackbar">Invalid JSON</div>
 </body>
+
 </html>

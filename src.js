@@ -1,5 +1,13 @@
 $(function () {
 
+    // set ace editor configuration 
+    var editor = ace.edit("editor");
+    //editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/json");
+    editor.setOptions({
+        fontSize: "10pt"
+    });
+
     // set the size 
     var setSizeForControl = function () {
         $("#jsonContainer").height((window.innerHeight - $("#header").outerHeight() - $("#actionContainer").outerHeight()) + "px");
@@ -14,6 +22,8 @@ $(function () {
         var splitter = $("#splitter");
         splitter.css("left", halfWidth + "px");
         splitter.height($("#treePanel").height());
+        $("#editorContainer").height($("#treePanel").height()) //32 is the margine editor adds-its minus to remove the vertical scroll
+        editor.resize();
     }
 
     setSizeForControl();
@@ -37,24 +47,25 @@ $(function () {
     if (cookieData) {
         try {
             inputJSONObj = JSON.parse(JSON.parse(cookieData));
-            $("#jsonTextArea").val(JSON.stringify(inputJSONObj));
         } catch (e) {
-            $("#jsonTextArea").val(JSON.stringify(inputJSONObj));
+            console.warn("data in cookie is invalid json data.");
         }
-        
-    } else {
-        $("#jsonTextArea").val(JSON.stringify(inputJSONObj));
-    }
+    } 
+
+    editor.setValue(JSON.stringify(inputJSONObj, null, '\t'));
 
     var formatJSONData = function () {
         try {
-            var inputjsonData = $("#jsonTextArea").val();
+            //var inputjsonData = $("#jsonTextArea").val();
+            var inputjsonData =editor.getValue();
             var outputJSONData = JSON.stringify(JSON.parse(inputjsonData), null, '  ');
-            $("#jsonTextArea").val(outputJSONData);
+            //$("#jsonTextArea").val(outputJSONData);
+            editor.session.setMode("ace/mode/json");
+            editor.setValue(outputJSONData);
 
         } catch (e) {
             showSnackbar();
-        }       
+        }
     };
 
     formatJSONData();
@@ -67,13 +78,13 @@ $(function () {
         if (childListDisplayValue === "none") {
             toggleEle.removeClass("expand");
             toggleEle.addClass("collapse");
-            childList.css("display", "");            
+            childList.css("display", "");
             childList.find(".eachItem").attr("invisible", "false");
         } else {
             toggleEle.removeClass("collapse");
             toggleEle.addClass("expand");
             childList.css("display", "none");
-            childList.find(".eachItem").attr("invisible","true");
+            childList.find(".eachItem").attr("invisible", "true");
         }
     }
 
@@ -147,7 +158,7 @@ $(function () {
             if (nextItemToSelect.length > 0) {
                 selectedItem.removeClass("itemSelected");
                 nextItemToSelect.addClass("itemSelected");
-            }            
+            }
         }
     }
 
@@ -160,9 +171,9 @@ $(function () {
             toggleTree(eventObject);
         }
     }
-       
-    $("#jsonTextArea").focus(function() {
-        $(".itemSelected").removeClass("itemSelected"); 
+
+    $("#jsonTextArea").focus(function () {
+        $(".itemSelected").removeClass("itemSelected");
     });
 
     var moveSelectionUp = function () {
@@ -182,14 +193,14 @@ $(function () {
     }
 
     var moveSelectionDown = function () {
-        var eachItemSelection = $(".eachItem").filter(function(index) {
+        var eachItemSelection = $(".eachItem").filter(function (index) {
             return $(this).attr("invisible") != "true";
         });
 
         var selectedItem = $(".itemSelected");
         var selectedItemIndex = eachItemSelection.index(selectedItem);
         if (selectedItemIndex >= 0) { // do arrow selection only if already one item selected.            
-            if ((eachItemSelection.length - 1) >= (selectedItemIndex + 1)) {                
+            if ((eachItemSelection.length - 1) >= (selectedItemIndex + 1)) {
                 $(eachItemSelection[selectedItemIndex]).removeClass("itemSelected");
                 $(eachItemSelection[selectedItemIndex + 1]).addClass("itemSelected");
                 return true;
@@ -228,17 +239,22 @@ $(function () {
 
     $("#minifyBtn").click(function () {
         try {
-            var inputjsonData = $("#jsonTextArea").val();
+            //var inputjsonData = $("#jsonTextArea").val();            
+            var inputjsonData = editor.getValue();
             var outputJSONData = JSON.stringify(JSON.parse(inputjsonData));
-            $("#jsonTextArea").val(outputJSONData);
+            //$("#jsonTextArea").val(outputJSONData);
+            editor.session.setMode("ace/mode/text");
+            var session = editor.session;
+            editor.getSession().setUseWrapMode(true);
+            var inputjsonData = editor.setValue(outputJSONData);            
         } catch (e) {
             showSnackbar();
-        }       
+        }
     });
 
     $("#expandAllBtn").on("click", function () {
         $("#treecontainer").find("#topNode").find("ul").css("display", "");
-        $("#treecontainer").find(".toggleTree").removeClass("expand").addClass("collapse");        
+        $("#treecontainer").find(".toggleTree").removeClass("expand").addClass("collapse");
     });
 
     $("#collapseAllBtn").on("click", function () {
@@ -249,24 +265,27 @@ $(function () {
     function showSnackbar() {
         var x = document.getElementById("snackbar")
         x.className = "show";
-        setTimeout(function() { x.className = x.className.replace("show", ""); }, 3000);
+        setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
     }
 
     $("#treeViewBtn").on("click", function () {
         $("#topNode").remove();
         firstTime = true;
-        var inputjsonData = $("#jsonTextArea").val();
+        //var inputjsonData = $("#jsonTextArea").val();
+        var inputjsonData = editor.getValue();
         try {
             var JSONObj = JSON.parse(inputjsonData);
             var topJSONObj = { JSON: JSONObj };
             addTree(topJSONObj, treeContainer);
-        } catch (e) {           
+        } catch (e) {
             showSnackbar();
         }
     });
 
     $('#jsonTextArea').bind('input propertychange', function () {
-        document.cookie = JSON.stringify($('#jsonTextArea').val());       
+        //document.cookie = JSON.stringify($('#jsonTextArea').val());
+        document.cookie = editor.getValue();
+
     });
 
     // add splitter - container.
@@ -299,6 +318,7 @@ $(function () {
                 var treePanelWidth = jsonContainer.width() - event.pageX - innerContainerMargin;
                 jsonTextArea.css("width", event.pageX - innerContainerMargin + "px");
                 treePanel.css("width", treePanelWidth + "px");
+                editor.resize();
             }
         } else {
             jsonTextArea.css("cursor", "default");
@@ -307,6 +327,5 @@ $(function () {
     }).mouseup(function () { isDragging = false; }).mouseleave(function () {
         isDragging = false;
     });
-
     // end- add splitter - container.
 });
