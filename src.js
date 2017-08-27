@@ -7,6 +7,7 @@ $(function () {
     editor.setOptions({
         fontSize: "10pt"
     });
+    editor.setOption("showPrintMargin", false);
 
     // set the size 
     var setSizeForControl = function () {
