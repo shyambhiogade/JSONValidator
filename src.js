@@ -11,11 +11,14 @@ $(function () {
 
     // set the size 
     var setSizeForControl = function () {
-        $("#jsonContainer").height((window.innerHeight - $("#header").outerHeight() - $("#actionContainer").outerHeight()) + "px");
-        $("#jsonContainer").width(window.innerWidth + "px");
+        $("container").width((window.innerWidth - 16)+"px");
+        $("#jsonContainer").height((window.innerHeight - $("#header").innerHeight() - $("#actionContainer").innerHeight()) + "px");        
         // set the layoutout 
-        var jsonContainerWidth = $("#jsonContainer").width();
+        var jsonContainerWidth = window.innerWidth - 16;
         $("#jsonContainer").width(jsonContainerWidth);
+        $("#copyRight").width(jsonContainerWidth);
+        $("#NoteSection").width(jsonContainerWidth);
+
         var halfWidth = (jsonContainerWidth) / 2;
         $("#treePanel").css("width", halfWidth + "px");
         $("#jsonTextArea").css("width", halfWidth + "px");
@@ -51,25 +54,28 @@ $(function () {
         } catch (e) {
             console.warn("data in cookie is invalid json data.");
         }
-    } 
+    }
 
     editor.setValue(JSON.stringify(inputJSONObj, null, '\t'));
 
-    var formatJSONData = function () {
+    var formatJSONData = function (firstTime) {
         try {
             //var inputjsonData = $("#jsonTextArea").val();
-            var inputjsonData =editor.getValue();
+            var inputjsonData = editor.getValue();
             var outputJSONData = JSON.stringify(JSON.parse(inputjsonData), null, '  ');
             //$("#jsonTextArea").val(outputJSONData);
             editor.session.setMode("ace/mode/json");
             editor.setValue(outputJSONData);
-
+            if (firstTime !== true) {
+                showSnackbar(true);    
+            }
+            
         } catch (e) {
             showSnackbar();
         }
     };
 
-    formatJSONData();
+    formatJSONData(true);
 
     var toggleTree = function (eventObject) {
         console.log(eventObject);
@@ -101,7 +107,7 @@ $(function () {
 
         $.each(jsonObj, function (key, value) {
             var typeofValue = typeof (value)
-            if (value !=null && typeofValue === "object") {
+            if (value != null && typeofValue === "object") {
                 var objHtml = "<span class='toggleTree collapse inlineSpan'></span><span class='objectSpan'></span>";
                 if (value.length) {
                     objHtml = "<span class='toggleTree collapse inlineSpan'></span><span class='arraySpan'></span>";
@@ -130,7 +136,7 @@ $(function () {
                     typeSpecificClass = "numberSpan";
                 } else if (typeofValue === "boolean") {
                     typeSpecificClass = "booleanSpan";
-                } else if (value === null){
+                } else if (value === null) {
                     typeSpecificClass = "nullSpan";
                     value = JSON.stringify(value);
                 }
@@ -266,10 +272,21 @@ $(function () {
         $("#treecontainer").find(".toggleTree").removeClass("collapse").addClass("expand");
     });
 
-    function showSnackbar() {
-        var x = document.getElementById("snackbar")
-        x.className = "show";
-        setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+    function showSnackbar(validJSON) {
+        $("#snackbar").addClass("show");
+        if (validJSON === true) {
+            $("#snackbar").addClass("successMsg");
+            $("#snackbar").text("Valid JSON");
+
+        } else {
+            $("#snackbar").addClass("errorMsg");
+            $("#snackbar").text("InValid JSON");
+        }
+
+        setTimeout(function () {
+            $("#snackbar").removeClass("show");
+        }, 3000);
+
     }
 
     $("#treeViewBtn").on("click", function () {

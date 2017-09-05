@@ -2,9 +2,13 @@
 <html>
 
 <head>
-    <title>Online JSON Viewer</title>
+    <title>Online JSON Validator, Parser, Formatter and Viewer</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <meta charset="utf-8" />
+    <meta name="description" content="JSONValidator is the free online JSON validator, parser, reformatter and vierwer tool for JSON, a lightweight data-interchange format.">
+    <meta property="og:title" content="The JSON Validator">
+    <meta name="keywords" content="json validator,Validate JSON,format json,JSON Format, online json formatter,json formatter online, JSON parser, Parse JSON, JSON treeview, tree view JSON,jsonlint,
+    json formatter,json lint,json beautifier,jsonformatter,format json online,json checker, json pretty,pretty json">
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -18,15 +22,19 @@
 </head>
 
 <body>
-    <a id="header" href="./OnlineJSONViewer.html">JSON Validator<span style="font-size:12px;">- by shyam bhiogade</span></a>
+    <div id="header" class="textFormatting" href="./OnlineJSONViewer.html">
+        <div style="margin-left:25px;">
+            JSON Validator
+        </div>
+    </div>
     <div id="container" style="background-color:#f1f1f1;">
         <div id="actionContainer" style="background-color:#f1f1f1;padding:5px;display:flex;flex-flow:row nowrap;">
             <div>
-                <button id="formatBtn">Format</button>
+                <button id="formatBtn">Validate</button>
                 <button id="minifyBtn">Remove whitespace</button>
             </div>
             <div>
-                <button id="treeViewBtn" style="margin-left:5px;background-color:#4CAF50;color:#ffffff">Tree View</button>
+                <button id="treeViewBtn" style="margin-left:5px;background-color:#4CAF50;color:#ffffff">Show Tree View</button>
                 <button id="expandAllBtn" style="">Expand All</button>
                 <button id="collapseAllBtn">Collapse All</button>
             </div>
@@ -46,6 +54,33 @@
         </div>
     </div>
     <div id="snackbar">Invalid JSON</div>
+    <div id="NoteSection" style="padding-left:50px;">
+        <h1>
+            About JSON Validator
+        </h1>
+        <p>
+            JSON Validator is a validator, reformatter and a JSON Viewer for JSON, a lightweight data-interchange format. Copy paste
+            the raw JSON in the editor above and let JSON Validator format, validate and visuallize in tree view, your messy
+            JSON code.
+        </p>
+        <h1> Tips & Tricks</h1>
+        <p>1. You can copy paste the JSON data in editor and click on Format, to format the JSON data.</p>
+        <p>2. You can click on the "Show Tree View" button to see the data in tree view</p>
+        <p>3. You can click on "Remove whitespace" button to minifiy the JSON data</p>
+        <h1>
+            Common Errors
+        </h1>
+        <p>1. Expecting 'STRING' - You probably have an extra comma at the end of your collection. Something like { "a": "b",}</p>
+        <p>2. Expecting 'STRING', 'NUMBER', 'NULL', 'TRUE', 'FALSE', '{', '[' - You probably have an extra comma at the end
+            of your list Something like: ["a", "b", ] </p>
+        <p>3. Enclosing your collection keys in quotes. Proper format for a collection is { "key": "value" }</p>
+        <p>4. Make sure you follow JSON's syntax properly. For example, always use double quotes, always quotify your keys,
+            and remove all callback functions.</p>
+    </div>
+    <div id="copyRight" class="textFormatting" 
+    style="width:100%;height:30px;background-color:#555555;text-align:center;font-size:16px;margin-top:50px;padding-top:20px;letter-spacing:3px;">
+        © 2017 - 2017 | JSON Validator
+    </div>
 </body>
 
 </html>
